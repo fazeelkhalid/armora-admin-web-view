@@ -26,7 +26,7 @@
 
                         <div style="position: relative; display: inline-block;">
                             <!-- Profile Image -->
-                            <img src="{{ asset($user->profile_image ? 'storage/'.$user->profile_image : 'admin/assets/images/users/avatar-1.jpg') }}"
+                            <img src="{{ asset($user->profile_image ? 'profile_pics/'.$user->profile_image : 'admin/assets/images/users/avatar-1.jpg') }}"
                                 class="rounded-circle avatar-lg img-thumbnail" alt="profile-image" id="profileImage">
 
                             <!-- Camera Icon -->

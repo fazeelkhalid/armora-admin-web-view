@@ -68,14 +68,21 @@ class UserController extends Controller
         
         $user = auth()->user();
         if ($request->hasFile('profile_pic')) {
-            if ($user->profile_image && $user->profile_image !== '' ) {
-                Storage::disk('public')->delete($user->profile_image);
+            if ($user->profile_image && $user->profile_image !== '') {
+                $oldImagePath = public_path('profile_pics/' . $user->profile_image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
             }
-    
-            $path = $request->file('profile_pic')->store('profile_pics', 'public');
-            // print_r($path );
-            // die();
-            $user->profile_image = $path;
+
+            
+             // Move the uploaded file to the public folder
+            $uploadedFile = $request->file('profile_pic');
+            $imageName = time() . '.' . $uploadedFile->getClientOriginalExtension();
+            $uploadedFile->move(public_path('profile_pics'), $imageName);
+
+            // Save the file path in the database
+            $user->profile_image = $imageName;
             $user->save();
         }
 
