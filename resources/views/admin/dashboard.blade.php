@@ -203,7 +203,7 @@ function() {
     </div>
     <!-- end row-->
 
-	@if($dashboardData ['total-devices'] != 0)
+	@if($dashboardData ['total-vulnerability'] != 0)
     <div class="row">
         <div class="col-lg-4" >
             <div class="card" id='pie-graph'>
