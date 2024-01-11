@@ -43,7 +43,7 @@ return array(
     'App\\Models\\Notification' => $baseDir . '/app/Models/Notification.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\Vulnerability' => $baseDir . '/app/Models/Vulnerability.php',
-    'App\\Models\\scanReport' => $baseDir . '/app/Models/scanReport.php',
+    'App\\Models\\scanReport' => $baseDir . '/app/Models/ScanReport.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
     'App\\Providers\\BroadcastServiceProvider' => $baseDir . '/app/Providers/BroadcastServiceProvider.php',
