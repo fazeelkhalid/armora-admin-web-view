@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Devices;
+use App\Models\Scans;
+
 use App\Models\Vulnerability;
 use App\Models\ScanReport;
 use App\Models\Notification;
@@ -57,5 +59,22 @@ class DashboardController extends Controller
 
     
         return view('admin.dashboard', ['dashboardData' => $dashboardData]);
+    }
+
+    public function appDashboard(Request $request)
+    {
+        // Check if token is required
+        if (!$request->has('token')) {
+            return response()->json(['error' => 'Token Missing'], 400);
+        }
+        
+        $token = $request->input('token');
+
+        $dashboardData = [];
+        $dashboardData['total_inprogress'] = Scans::inProgressScanCountByToken($token);
+        $dashboardData['total_vulnerability'] = Vulnerability::VulnerabilityCountByToken($token);
+        $dashboardData['total_report'] = ScanReport::ScanReportCountByToken($token);
+
+        return response()->json($dashboardData);
     }
 }

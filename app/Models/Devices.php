@@ -25,7 +25,8 @@ class Devices extends Model
         'MAC_address',
         'operating_system',
         'auth_key',
-        'is_verified'
+        'is_verified',
+        'token'
     ];
 
     protected $casts = [
@@ -42,9 +43,6 @@ class Devices extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-
-
-
     /**
      * Find and update a device based on Auth-Key and MAC address.
      *
@@ -57,32 +55,27 @@ class Devices extends Model
         $device = self::where('auth_key', $authKey)
             ->first();
 
+        $Response = null;
         if ($device) {
             if (!$device->is_verified) {
                 $device->update(['is_verified' => true]);
-                return 1;
+                $Response = response()->json(['message' => 'Device verification successful', 'token'=> $device->token], 200);                
             } else {
-                return 2;
+                $Response = response()->json(['error' => 'Auth Key expired or already used'], 400);
             }
         }
+        else{
+            $Response = response()->json(['error' => 'Device not found'], 404);   
+        }
 
-        return false;
+        return $Response;;
     }
 
 
-    /**
-     * Verify a device based on Auth-Key and MAC address.
-     *
-     * @param string $authKey
-     * @param string $macAddress
-     * @return int Verification status (1: Verified, 0: Not Verified)
-     */
-    public static function verifyDeviceBYMAC($macAddress)
+    public static function verifyDeviceByToken($token)
     {
-        // Find the device based on MAC address
-        $device = self::where('MAC_address', $macAddress)->first();
+        $device = self::where('token', $token)->first();
 
-        // Return 1 if the device is verified, otherwise return 0
         return $device && $device->is_verified ? 1 : 0;
     }
 

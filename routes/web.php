@@ -17,9 +17,9 @@ Route::get('/dumpData', [SchedulerController::class, 'dumpNessusData']);
 Route::get('/getNotification', [NotificationController::class, 'getNotification']);
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index']);
 
+Route::middleware(['auth'])->group(function () {
+    
     Route::get('/vulnerability', [VulnerabilityController::class, 'index'])->name('admin.vulnerability');
     Route::get('/systems', [DeviceController::class, 'systemVulnerabilities'])->name('admin.systems');
     Route::get('/scan-reports', [ScanReportController::class, 'index'])->name('admin.scan-reports');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+use Illuminate\Support\Facades\Crypt;
 
 class GenerateIDController extends Controller
 {
@@ -16,5 +17,20 @@ class GenerateIDController extends Controller
         $customID = $prefix . $randomAlphabets;
 
         return $customID;
+    }
+
+    static function getAuthKey()
+    {
+        
+        $randomAlphabets = substr(str_replace('-', '', Uuid::uuid4()->toString()), 0, 5);
+        $randomAlphabets = $randomAlphabets . '-'. substr(str_replace('-', '', Uuid::uuid4()->toString()), 0, 5);
+        $randomAlphabets = $randomAlphabets . '-'. substr(str_replace('-', '', Uuid::uuid4()->toString()), 0, 5);
+        $randomAlphabets = $randomAlphabets . '-'. substr(str_replace('-', '', Uuid::uuid4()->toString()), 0, 5);
+        
+        return $randomAlphabets;
+    }
+
+    static function getToken(){
+        return Crypt::encrypt( Uuid::uuid4()->toString());
     }
 }

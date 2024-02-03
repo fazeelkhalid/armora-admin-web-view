@@ -6,7 +6,7 @@ use App\Http\Controllers\ScanController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\VulnerabilityController;
 use App\Http\Controllers\ScanReportController;
-
+use App\Http\Controllers\DashboardController;
 
 use App\Http\Middleware\APIKeyMiddleware;
 use App\Http\Middleware\NessusAuthMiddleWare;
@@ -50,8 +50,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware([APIKeyMiddleware::class])->group(function () {
     Route::post('/device/verify', [DeviceController::class, 'verifyDeviceByKey']);
     Route::post('/device/verification', [DeviceController::class, 'checkDeviceVerification']);
+    Route::post('/dashboard', [DashboardController::class, 'appDashboard']);
     
-    Route::middleware([NessusAuthMiddleWare::class,StartScan::class])->group(function () {
-        Route::post('/scan', [ScanController::class, 'scan']);
+    Route::middleware([StartScan::class])->group(function () {
+        Route::post('/scan', [ScanController::class, 'storeScanRequest']);
     });
 });

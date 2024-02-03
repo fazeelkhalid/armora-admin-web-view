@@ -38,4 +38,10 @@ class scanReport extends Model
         })->count();
     }
 
+    public static function ScanReportCountByToken($token){
+        return scanReport::whereHas('device', function ($query) use ($token) {
+            $query->where('token', $token);
+        })->count();
+    }
+
 }

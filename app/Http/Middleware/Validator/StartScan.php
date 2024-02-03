@@ -19,7 +19,7 @@ class StartScan
          // Validate request parameters
         $validator = validator($request->all(), [
             'ip' => 'required|ip',
-            'mac' => 'required',
+            'token' => 'required',
         ]);
 
         if ($validator->fails()) {

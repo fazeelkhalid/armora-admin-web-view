@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 
 use App\Models\Devices;
 use App\Models\Notification;
-
+use Ramsey\Uuid\Uuid;
 use App\Http\Controllers\GenerateIDController;
 
 class DeviceController extends Controller
@@ -51,6 +51,8 @@ class DeviceController extends Controller
         $device->device_name = $request->input('system_name');
         $device->MAC_address = $request->input('mac_address');
         $device->operating_system = $request->input('operating_system');
+        $device->auth_key = GenerateIDController::getAuthKey();
+        $device->token = GenerateIDController::getToken();
         $device->is_verified = false;
         $device->save();
         
@@ -108,21 +110,9 @@ class DeviceController extends Controller
             'auth_key' => 'required|string',
         ]);
 
-        $verificationResult = Devices::verifyDeviceByKey(
+        return Devices::verifyDeviceByKey(
             $request->input('auth_key'),
         );
-
-        // Respond based on the verification result
-        if ($verificationResult == 1) {
-            return response()->json(['message' => 'Device verification successful'], 200);
-        }
-        elseif ($verificationResult == 2) {
-            return response()->json(['error' => 'Auth Key expired or already used'], 400);
-        }
-        else {
-            die($verificationResult);
-            return response()->json(['error' => 'Device not found'], 404);
-        }
 
     }
 
@@ -137,10 +127,10 @@ class DeviceController extends Controller
     {
         // Validate the request data
         $request->validate([
-            'mac_address' => 'required|string',
+            'token' => 'required|string',
         ]);
 
-        $verificationStatus = Devices::verifyDeviceBYMAC($request->input('mac_address'));
+        $verificationStatus = Devices::verifyDeviceByToken($request->input('token'));
         
         if ($verificationStatus == 1) {
             return response()->json([ 'message' => 'Device is verified.'], 200);
@@ -148,4 +138,5 @@ class DeviceController extends Controller
             return response()->json([ 'message' => 'Device is not verified.'], 404);
         }
     }
+    
 }

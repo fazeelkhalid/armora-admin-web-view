@@ -15,11 +15,14 @@ use App\Models\Vulnerability;
 use App\Models\ScanReport;
 use App\Models\Notification;
 use App\Models\Devices;
+use App\Models\Scans;
 
 use App\Enums\NotificationType;
+use App\Enums\ScanReportStatusType;
 
 class ScanController extends Controller
 {
+    // this will start a scan on a single request
     public function scan(Request $request)
     {
         $mac = $request->input('mac');
@@ -78,6 +81,21 @@ class ScanController extends Controller
                 'response' => $response->json(), 
             ], $response->status());
         }
+    }
+
+    public function storeScanRequest(Request $request)
+    {
+        $scan = new Scans([
+            'ip' => $request->input('ip'),
+            'token' => $request->input('token'),
+            // You may want to generate 'code' and set 'status' based on your requirements
+            'code' =>  GenerateIDController::getID('ss_'),
+            'status' =>  ScanReportStatusType::PENDING
+        ]);
+
+        $scan->save();
+
+        return response()->json(['message' => 'Scan created successfully'], 201);
     }
 
     public function exportReport($scanId, $scanName)
