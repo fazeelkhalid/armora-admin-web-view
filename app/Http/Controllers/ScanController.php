@@ -175,18 +175,18 @@ class ScanController extends Controller
                     $csv = new CSVScrapperController();
                     $fileContent = $csv->convertCsvToJson($fileContent);
                     
-                    $ScanReport = ScanReport::create([
+                    $scanReport = ScanReport::create([
                         'code'=> GenerateIDController::getID('sr_'),
                         'device_id' => Devices::getCodeByMacAddress($filename)??'de_dbd24775f8ec4',
                         'report_name' => $scanName
                     ]);
                     
                     
-                    Notification::createNotification($ScanReport->code, NotificationType::SCAN_REPORT, $filename);
+                    Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $filename);
                     // Notification::createNotification('sr_1280d79d33e34', NotificationType::SCAN_REPORT, '6C-02-E0-16-E3-B2');
                     
                     foreach ($fileContent as $data) {
-                        $data['scan_report_id'] = $ScanReport->code;
+                        $data['scan_report_id'] = $scanReport->code;
                         Vulnerability::create($data);
                     }
                     

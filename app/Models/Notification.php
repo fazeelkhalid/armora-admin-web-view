@@ -3,7 +3,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ScanReport;
 
 use App\Http\Controllers\GenerateIDController;
 
@@ -70,10 +69,10 @@ class Notification extends Model
             }
             
             if ($notification->type === NotificationType::SCAN_REPORT) {
-                $ScanReport = ScanReport::where('code', $notification->obj_id)->first();
-                if ($ScanReport) {
-                    $reportName = $ScanReport->report_name;
-                    $notification->ScanReport = $ScanReport;
+                $scanReport = ScanReport::where('code', $notification->obj_id)->first();
+                if ($scanReport) {
+                    $reportName = $scanReport->report_name;
+                    $notification->scanReport = $scanReport;
                 }
             }
             $groupedNotifications[$dateKey][] = $notification;

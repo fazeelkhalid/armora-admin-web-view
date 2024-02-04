@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use App\Models\ScanReport;
 
 class Devices extends Model
 {
@@ -34,8 +33,7 @@ class Devices extends Model
         'is_verified' => 'boolean',
     ];
 
-    public function scan_reports()
-    {
+    public function scan_reports()    {
         return $this->hasMany(ScanReport::class, 'device_id', 'code');
     }
 

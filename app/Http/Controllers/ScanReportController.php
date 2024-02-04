@@ -46,13 +46,13 @@ class ScanReportController extends Controller
         $user =  auth()->user();
         DB::beginTransaction();
         try {
-            $ScanReport = ScanReport::where('code', $id)
+            $scanReport = ScanReport::where('code', $id)
             ->whereHas('device.user', function ($query) use ($user) {
                 $query->where('id', $user->id);
             })
             ->first();
 
-            $ScanReport->delete();
+            $scanReport->delete();
 
             DB::commit();
 
@@ -66,10 +66,10 @@ class ScanReportController extends Controller
     public static function extractInformation($scanReports){
         $vulnerabilityCount = [];
 
-        foreach ($scanReports as $ScanReport) {
-            $vulnerabilities = $ScanReport->vulnerabilities;
+        foreach ($scanReports as $scanReport) {
+            $vulnerabilities = $scanReport->vulnerabilities;
             
-            $vulnerabilityCount[$ScanReport->report_name] = [
+            $vulnerabilityCount[$scanReport->report_name] = [
                 'Critical' => $vulnerabilities->where('risk', 'Critical')->count(),
                 'High' => $vulnerabilities->where('risk', 'High')->count(),
                 'Medium' => $vulnerabilities->where('risk', 'Medium')->count(),
