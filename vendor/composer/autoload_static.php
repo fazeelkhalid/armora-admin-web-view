@@ -567,7 +567,7 @@ class ComposerStaticInitc61ff82cbf0142a401a48a8161e1595a
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\Vulnerability' => __DIR__ . '/../..' . '/app/Models/Vulnerability.php',
-        'App\\Models\\scanReport' => __DIR__ . '/../..' . '/app/Models/ScanReport.php',
+        'App\\Models\\scanReport' => __DIR__ . '/../..' . '/app/Models/scanReport.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
