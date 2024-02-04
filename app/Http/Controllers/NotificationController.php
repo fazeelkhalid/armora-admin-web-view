@@ -41,7 +41,7 @@ class NotificationController extends Controller
 
             foreach ($notificationsForDate as $notification) {
                 if ($notification->type === NotificationType::SCAN_REPORT) {
-                    $html .= '<a href="' . url('notification/scan-report/' . str_replace('sr_', '', $notification->scanReport->code)) . '" class="dropdown-item p-0 notify-item card ' . ($notification->is_read ? 'unread-noti' : 'read-noti') . ' unread-noti shadow-none mb-2">
+                    $html .= '<a href="' . url('notification/scan-report/' . str_replace('sr_', '', $notification->ScanReport->code)) . '" class="dropdown-item p-0 notify-item card ' . ($notification->is_read ? 'unread-noti' : 'read-noti') . ' unread-noti shadow-none mb-2">
                         <div class="card-body">
                            
                             <div class="d-flex align-items-center">
@@ -51,7 +51,7 @@ class NotificationController extends Controller
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 text-truncate ms-2">
-                                    <h5 class="noti-item-title fw-semibold font-14">' . $notification->scanReport->report_name . '</h5>
+                                    <h5 class="noti-item-title fw-semibold font-14">' . $notification->ScanReport->report_name . '</h5>
                                     <small class="noti-item-subtitle text-muted">' . \Carbon\Carbon::parse($notification->created_at)->format('g:i A') . '</small>
                                 </div>
                             </div>

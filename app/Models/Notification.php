@@ -70,10 +70,10 @@ class Notification extends Model
             }
             
             if ($notification->type === NotificationType::SCAN_REPORT) {
-                $scanReport = ScanReport::where('code', $notification->obj_id)->first();
-                if ($scanReport) {
-                    $reportName = $scanReport->report_name;
-                    $notification->scanReport = $scanReport;
+                $ScanReport = ScanReport::where('code', $notification->obj_id)->first();
+                if ($ScanReport) {
+                    $reportName = $ScanReport->report_name;
+                    $notification->ScanReport = $ScanReport;
                 }
             }
             $groupedNotifications[$dateKey][] = $notification;
