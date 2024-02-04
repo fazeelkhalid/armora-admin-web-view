@@ -74,6 +74,7 @@ class DashboardController extends Controller
         $dashboardData['total_inprogress'] = Scans::inProgressScanCountByToken($token);
         $dashboardData['total_vulnerability'] = Vulnerability::VulnerabilityCountByToken($token);
         $dashboardData['total_report'] = scanReport::ScanReportCountByToken($token);
+        $dashboardData['client_name'] = Devices::getDeviceNameByToken($token);
 
         // return
         return response()->json($dashboardData);

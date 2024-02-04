@@ -109,4 +109,17 @@ class Devices extends Model
         return $device ? $device->code : null;
     }
 
+
+    public static function getDeviceNameByToken($token)
+    {
+        $device = self::where('token', $token)->first();
+
+        if ($device) {
+            return $device->device_name;
+        }
+
+        return null; // Token not found or device not exists
+    }
+
+
 }
