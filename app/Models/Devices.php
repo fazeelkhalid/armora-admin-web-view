@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use ScanReport;
+use App\Models\ScanReport;
 
 class Devices extends Model
 {
