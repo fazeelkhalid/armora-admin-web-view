@@ -75,6 +75,7 @@ class DashboardController extends Controller
         $dashboardData['total_vulnerability'] = Vulnerability::VulnerabilityCountByToken($token);
         $dashboardData['total_report'] = ScanReport::ScanReportCountByToken($token);
 
+        // return
         return response()->json($dashboardData);
     }
 }
