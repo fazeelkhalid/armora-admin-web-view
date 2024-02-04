@@ -35,7 +35,7 @@ class Devices extends Model
 
     public function scan_reports()
     {
-        return $this->hasMany(scanReport::class, 'device_id', 'code');
+        return $this->hasMany(ScanReport::class, 'device_id', 'code');
     }
 
     public function user()

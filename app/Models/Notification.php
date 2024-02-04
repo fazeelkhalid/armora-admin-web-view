@@ -69,7 +69,7 @@ class Notification extends Model
             }
             
             if ($notification->type === NotificationType::SCAN_REPORT) {
-                $scanReport = scanReport::where('code', $notification->obj_id)->first();
+                $scanReport = ScanReport::where('code', $notification->obj_id)->first();
                 if ($scanReport) {
                     $reportName = $scanReport->report_name;
                     $notification->scanReport = $scanReport;

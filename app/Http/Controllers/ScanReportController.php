@@ -13,7 +13,7 @@ class ScanReportController extends Controller
     public function index()
     {
         $user =  auth()->user();
-        $scanReports = scanReport::whereHas('device.user', function ($query) use ($user) {
+        $scanReports = ScanReport::whereHas('device.user', function ($query) use ($user) {
             $query->where('id', $user->id);
         })
         ->with('vulnerabilities')
@@ -29,7 +29,7 @@ class ScanReportController extends Controller
         $deviceID = 'de_'. $deviceID;
 
         $user =  auth()->user();
-        $scanReports = scanReport::whereHas('device.user', function ($query) use ($user) {
+        $scanReports = ScanReport::whereHas('device.user', function ($query) use ($user) {
             $query->where('id', $user->id);
         })
         ->where('device_id', $deviceID)
@@ -46,7 +46,7 @@ class ScanReportController extends Controller
         $user =  auth()->user();
         DB::beginTransaction();
         try {
-            $scanReport = scanReport::where('code', $id)
+            $scanReport = ScanReport::where('code', $id)
             ->whereHas('device.user', function ($query) use ($user) {
                 $query->where('id', $user->id);
             })

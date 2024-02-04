@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class scanReport extends Model
+class ScanReport extends Model
 {
     use HasFactory;
 
@@ -33,13 +33,13 @@ class scanReport extends Model
     
 
     public static function ScanReportCount(){
-        return scanReport::whereHas('device.user', function ($query) {
+        return ScanReport::whereHas('device.user', function ($query) {
             $query->where('id', auth()->user()->id);
         })->count();
     }
 
     public static function ScanReportCountByToken($token){
-        return scanReport::whereHas('device', function ($query) use ($token) {
+        return ScanReport::whereHas('device', function ($query) use ($token) {
             $query->where('token', $token);
         })->count();
     }
