@@ -7,7 +7,7 @@ use App\Models\Devices;
 use App\Models\Scans;
 
 use App\Models\Vulnerability;
-use App\Models\ScanReport;
+use App\Models\scanReport;
 use App\Models\Notification;
 
 
