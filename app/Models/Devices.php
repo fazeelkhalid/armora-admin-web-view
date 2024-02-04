@@ -33,8 +33,9 @@ class Devices extends Model
         'is_verified' => 'boolean',
     ];
 
-    public function scan_reports()    {
-        return $this->hasMany(ScanReport::class, 'device_id', 'code');
+    public function scan_reports()
+    {
+        return $this->hasMany(scanReport::class, 'device_id', 'code');
     }
 
     public function user()

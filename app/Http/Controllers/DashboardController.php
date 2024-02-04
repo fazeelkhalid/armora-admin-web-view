@@ -20,8 +20,8 @@ class DashboardController extends Controller
         $user =  auth()->user();
         $dashboardData ['total-devices'] = Devices::devicesCount();
         $dashboardData ['total-vulnerability'] = Vulnerability::VulnerabilityCount();
-        $dashboardData ['total-report'] = ScanReport::ScanReportCount();
-        $scanReports = $scanReports = ScanReport::whereHas('device.user', function ($query) use ($user) {
+        $dashboardData ['total-report'] = scanReport::ScanReportCount();
+        $scanReports = $scanReports = scanReport::whereHas('device.user', function ($query) use ($user) {
                         $query->where('id', $user->id);
                     })
                     ->with('vulnerabilities')
@@ -73,7 +73,7 @@ class DashboardController extends Controller
         $dashboardData = [];
         $dashboardData['total_inprogress'] = Scans::inProgressScanCountByToken($token);
         $dashboardData['total_vulnerability'] = Vulnerability::VulnerabilityCountByToken($token);
-        // $dashboardData['total_report'] = ScanReport::ScanReportCountByToken($token);
+        $dashboardData['total_report'] = scanReport::ScanReportCountByToken($token);
 
         // return
         return response()->json($dashboardData);
