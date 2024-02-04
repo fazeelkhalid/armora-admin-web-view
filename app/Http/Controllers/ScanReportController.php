@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ScanReport;
+use App\Models\scanReport;
 use App\Models\Devices;
 use App\Models\Notification;
 use DB;

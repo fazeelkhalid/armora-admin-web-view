@@ -12,7 +12,7 @@ use App\Http\Controllers\GenerateIDController;
 
 
 use App\Models\Vulnerability;
-use App\Models\ScanReport;
+use App\Models\scanReport;
 use App\Models\Notification;
 use App\Models\Devices;
 use App\Models\Scans;
@@ -175,7 +175,7 @@ class ScanController extends Controller
                     $csv = new CSVScrapperController();
                     $fileContent = $csv->convertCsvToJson($fileContent);
                     
-                    $scanReport = ScanReport::create([
+                    $scanReport = scanReport::create([
                         'code'=> GenerateIDController::getID('sr_'),
                         'device_id' => Devices::getCodeByMacAddress($filename)??'de_dbd24775f8ec4',
                         'report_name' => $scanName
