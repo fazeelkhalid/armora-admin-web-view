@@ -13,10 +13,11 @@ use App\Http\Controllers\ScanController;
 use App\Http\Middleware\NessusAuthMiddleWare;
 
 
-Route::get('/dumpData', [SchedulerController::class, 'dumpNessusData']);
 
 Route::middleware([NessusAuthMiddleWare::class])->group(function () {
     Route::get('/start-scan-on-nessus-server', [ScanController::class, 'startNessusScan']);
+    Route::get('/dump-nessus-data', [SchedulerController::class, 'dumpNessusData']);
+
 });
 
 Route::middleware(['auth'])->group(function () {

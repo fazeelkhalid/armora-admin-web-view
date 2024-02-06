@@ -7,6 +7,6 @@ class ScanReportStatusType
 {
     public const PENDING = 'PENDING';
     public const INPROGRESS = 'INPROGRESS';
-    public const COMPLETE = 'COMPLETE';
+    public const COMPLETED = 'COMPLETED';
 
 }

@@ -117,7 +117,7 @@ class ScanController extends Controller
         $responses = [];
         if ($pendingScans->isNotEmpty()) {
             foreach ($pendingScans as $pendingScan) {
-                $name = $pendingScan->device_name.'/'.GenerateIDController::getID('').'/'.$pendingScan->token;
+                $name = $pendingScan->device_name.' / '.GenerateIDController::getID('').'|'.$pendingScan->token;
                 $response = $this->scan($pendingScan->ip, $name);
         
                 if ($response->status() == 200) {
@@ -190,8 +190,6 @@ class ScanController extends Controller
                 'X-Api-Token' => $apiToken,
                 'X-Cookie' => "token={$sessionToken}",
             ])->post(env('NESSUS_URL')."/scans/{$scanId}/export", $requestBody);
-    
-            
             if ($exportResponse->successful()) {
                 $exportResponse = $exportResponse->json(); 
                 $token = $exportResponse['token'];
@@ -205,29 +203,33 @@ class ScanController extends Controller
                     preg_match('/filename="([^"]+)"/', $filename, $matches);
                     $filename = isset($matches[1]) ? $matches[1] : null;
 
+
                     $createdDate = strtotime($createdDate);
                     $formattedDate = date('Y-m-d H:i:s', $createdDate);
                     $fileContent = $downloadResponse->body();
                     
                     $csv = new CSVScrapperController();
                     $fileContent = $csv->convertCsvToJson($fileContent);
+                    $parseFileName = $wordsArray = explode('|', $scanName);
+                    $filename = $parseFileName[0];
+                    $token = $parseFileName[1];
+
+                   
                     
                     $scanReport = scanReport::create([
                         'code'=> GenerateIDController::getID('sr_'),
-                        'device_id' => Devices::getCodeByMacAddress($filename)??'de_dbd24775f8ec4',
-                        'report_name' => $scanName
+                        'device_id' => Devices::getCodeByToken($token)??'de_dbd24775f8ec4',
+                        'report_name' => $filename
                     ]);
                     
-                    
-                    Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $filename);
-                    // Notification::createNotification('sr_1280d79d33e34', NotificationType::SCAN_REPORT, '6C-02-E0-16-E3-B2');
                     
                     foreach ($fileContent as $data) {
                         $data['scan_report_id'] = $scanReport->code;
                         Vulnerability::create($data);
                     }
                     
-                    
+                    Scans::markScansAsCompleted($token);
+                    Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $filename);
                     return response()->json([
                         'filename' => $filename,
                         'created_date' => $formattedDate,

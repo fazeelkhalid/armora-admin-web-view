@@ -102,11 +102,16 @@ class Devices extends Model
         }
     }
 
-    public static function getCodeByMacAddress($macAddress)
+    public static function getCodeByToken($token)
     {
-        $device = Devices::where('MAC_address', $macAddress)->first();
+        $device = Devices::where('token', $token)->first();
 
-        return $device ? $device->code : null;
+        if($device){
+            return $device->code;
+        }
+        else{
+            return null;   
+        }
     }
 
 

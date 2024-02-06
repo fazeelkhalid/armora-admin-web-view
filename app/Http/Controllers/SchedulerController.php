@@ -8,7 +8,6 @@ use App\Http\Controllers\ScanController;
 class SchedulerController extends Controller
 {
     public function dumpNessusData() {
-        
         $nessusScan = new ScanController();
         $response = $nessusScan->getAllScans();
         if ($response->status() == 200) {
@@ -23,10 +22,12 @@ class SchedulerController extends Controller
                     $reportResponse = $nessusScan->exportReport($scanId, $scanName);
         
                     if ($reportResponse->status() == 200) {
-                        // $nessusScan->deleteScan($scanId);
+                        $nessusScan->deleteScan($scanId);
                     }
+                    return $reportResponse;
                 }
             }
         }
+        return $response;
     }
 }

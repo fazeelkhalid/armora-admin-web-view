@@ -36,6 +36,12 @@ class Scans extends Model
         return self::where('status', ScanReportStatusType::PENDING)
             ->get();
     }
-    
+
+    public static function markScansAsCompleted($token)
+    {
+        self::where('token', $token)
+            ->where('status', ScanReportStatusType::INPROGRESS)
+            ->update(['status' => ScanReportStatusType::COMPLETED]);
+    }    
 
 }
