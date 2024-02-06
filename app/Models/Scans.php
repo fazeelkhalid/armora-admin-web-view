@@ -18,6 +18,7 @@ class Scans extends Model
         'ip', 
         'token', 
         'status',
+        'device_name'
     ];
     
     public static function inProgressScanCountByToken($token)
