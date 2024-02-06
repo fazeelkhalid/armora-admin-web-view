@@ -8,15 +8,16 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ScanController;
 
 use App\Http\Middleware\NessusAuthMiddleWare;
 
 
 Route::get('/dumpData', [SchedulerController::class, 'dumpNessusData']);
 
-Route::get('/getNotification', [NotificationController::class, 'getNotification']);
-
-
+Route::middleware([NessusAuthMiddleWare::class])->group(function () {
+    Route::get('/start-scan-on-nessus-server', [ScanController::class, 'startNessusScan']);
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index']);

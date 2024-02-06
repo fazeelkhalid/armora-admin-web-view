@@ -23,10 +23,8 @@ use App\Enums\ScanReportStatusType;
 class ScanController extends Controller
 {
     // this will start a scan on a single request
-    public function scan(Request $request)
+    public function scan($ip, $name)
     {
-        $mac = $request->input('mac');
-        $ip = $request->input('ip');
 
         $apiToken = env('NESSUS_API_TOKEN');
 
@@ -35,13 +33,14 @@ class ScanController extends Controller
         $requestBody = [
             'uuid' => env('NESSUS_SCAN_UUID'),
             'settings' => [
-                'name' => $mac,
+                'name' => $name,
                 'enabled' => true,
                 'launch' => 'ON_DEMAND',
                 'text_targets' => $ip,
             ],
             'user_permissions' => 128,
         ];
+
 
         // scan init request
         $response = Http::withoutVerifying()->withHeaders([
@@ -51,6 +50,7 @@ class ScanController extends Controller
             'X-Cookie' => "token={$sessionToken}",
         ])->post(env('NESSUS_URL').'/scans', $requestBody);
 
+        
         
         if ($response->successful()) {
 
@@ -66,7 +66,10 @@ class ScanController extends Controller
     
 
             if ($launchResponse->successful()) {
-                return response()->json(['scan_id' => $scanId, 'launch_response' => $launchResponse->json()]);
+                return response()->json([
+                    'scan_id' => $scanId,
+                    'launch_response' => $launchResponse->json()
+                ],  $launchResponse->status());
             }
             else {
                 return response()->json([
@@ -78,24 +81,58 @@ class ScanController extends Controller
         else {
             return response()->json([
                 'error' => 'Nessus scan request failed',
-                'response' => $response->json(), 
+                'response' => $response->json(),
             ], $response->status());
         }
     }
 
     public function storeScanRequest(Request $request)
     {
-        $scan = new Scans([
-            'ip' => $request->input('ip'),
-            'token' => $request->input('token'),
-            // You may want to generate 'code' and set 'status' based on your requirements
-            'code' =>  GenerateIDController::getID('ss_'),
-            'status' =>  ScanReportStatusType::PENDING
-        ]);
-
-        $scan->save();
-
-        return response()->json(['message' => 'Scan created successfully'], 201);
+        $token = $request->input('token');
+        $device = Devices::where('token', $token)->first();
+    
+        if ($device && $device->is_verified) {
+            $scan = new Scans([
+                'ip' => $request->input('ip'),
+                'token' => $token,
+                'device_name' => $device->device_name,
+                'code' => GenerateIDController::getID('ss_'),
+                'status' => ScanReportStatusType::PENDING,
+                'device_id' => $device->code, // Assuming there is a foreign key relationship
+            ]);
+    
+            $scan->save();
+    
+            return response()->json(['message' => 'Scan created successfully'], 201);
+        } elseif ($device && !$device->is_verified) {
+            return response()->json(['error' => 'Device not verified'], 400);
+        } else {
+            return response()->json(['error' => 'Device not found'], 404);
+        }
+    }
+    
+    public function startNessusScan()
+    {
+        $pendingScans = Scans::getAllPendingScans();
+        $responses = [];
+        if ($pendingScans->isNotEmpty()) {
+            foreach ($pendingScans as $pendingScan) {
+                $name = $pendingScan->device_name.'/'.GenerateIDController::getID('').'/'.$pendingScan->token;
+                $response = $this->scan($pendingScan->ip, $name);
+        
+                if ($response->status() == 200) {
+                    $pendingScan->update(['status' => ScanReportStatusType::INPROGRESS]);
+                }
+                $responses[] = [
+                    'id' => $pendingScan->id,
+                    'code' => $pendingScan->code,
+                    'response' => $response,
+                ];
+            }
+            return response()->json(['message' => 'Pending scans processed', 'nessus_responses' => $responses], 200);
+        } else {
+            return response()->json(['message' => 'No pending scans found'], 404);
+        }        
     }
 
     public function exportReport($scanId, $scanName)

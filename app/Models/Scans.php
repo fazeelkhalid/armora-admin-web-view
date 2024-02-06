@@ -29,4 +29,12 @@ class Scans extends Model
                 ->count();
 
     }
+
+    public static function getAllPendingScans()
+    {
+        return self::where('status', ScanReportStatusType::PENDING)
+            ->get();
+    }
+    
+
 }
