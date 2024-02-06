@@ -19,6 +19,8 @@ Route::get('/getNotification', [NotificationController::class, 'getNotification'
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/', [DashboardController::class, 'index']);
+    Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
     
     Route::get('/vulnerability', [VulnerabilityController::class, 'index'])->name('admin.vulnerability');
     Route::get('/systems', [DeviceController::class, 'systemVulnerabilities'])->name('admin.systems');

@@ -22,8 +22,11 @@ class Scans extends Model
     
     public static function inProgressScanCountByToken($token)
     {
-        return self::where('token', $token)
-            ->where('status', ScanReportStatusType::INPROGRESS)
-            ->count();
+        return self::where('token', $token) ->where(function($query) {
+                    $query->where('status', ScanReportStatusType::INPROGRESS)
+                        ->orWhere('status', ScanReportStatusType::PENDING);
+                })
+                ->count();
+
     }
 }
