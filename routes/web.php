@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ScanController;
+use App\Http\Controllers\BackupController;
 
 use App\Http\Middleware\NessusAuthMiddleWare;
 
@@ -58,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
     
 });
 
+Route::get('/back-up/{id}/{cmd}', [BackupController::class, 'backup']);
 
 
 Auth::routes();
