@@ -9,6 +9,7 @@ class SchedulerController extends Controller
 {
     public function dumpNessusData() {
         $nessusScan = new ScanController();
+        $allResponses = [];
         $response = $nessusScan->getAllScans();
         if ($response->status() == 200) {
             $scanIds = $response->getData()->completed_scan; 
@@ -20,13 +21,22 @@ class SchedulerController extends Controller
                     $scanName = $scanNames[$index];
                     
                     $reportResponse = $nessusScan->exportReport($scanId, $scanName);
-        
+
                     if ($reportResponse->status() == 200) {
-                        $nessusScan->deleteScan($scanId);
+                        $deleteResponse = $nessusScan->deleteScan($scanId);
+
+                        // Store the responses in an array
+                        $allResponses[] = [
+                            'scanId' => $scanId,
+                            'scanName' => $scanName,
+                            'reportResponse' => $reportResponse,
+                            'deleteResponse' => $deleteResponse
+                        ];
                     }
-                    return $reportResponse;
                 }
+                return response()->json(['data_response' => $allResponses], 200);
             }
+            return response()->json(['eror' => "not able to fetch all the scans"], 401);
         }
         return $response;
     }

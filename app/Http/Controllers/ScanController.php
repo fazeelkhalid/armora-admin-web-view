@@ -117,7 +117,7 @@ class ScanController extends Controller
         $responses = [];
         if ($pendingScans->isNotEmpty()) {
             foreach ($pendingScans as $pendingScan) {
-                $name = $pendingScan->device_name.' / '.GenerateIDController::getID('').'|'.$pendingScan->token;
+                $name = $pendingScan->device_name.' / ' . str_replace('vu_', '', $pendingScan->code) . '|'.$pendingScan->token;
                 $response = $this->scan($pendingScan->ip, $name);
         
                 if ($response->status() == 200) {
@@ -224,12 +224,14 @@ class ScanController extends Controller
                     
                     
                     foreach ($fileContent as $data) {
+                        $data['code'] = GenerateIDController::getID('vu_');
                         $data['scan_report_id'] = $scanReport->code;
                         Vulnerability::create($data);
                     }
                     
                     Scans::markScansAsCompleted($token);
                     Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $filename);
+                    
                     return response()->json([
                         'filename' => $filename,
                         'created_date' => $formattedDate,
