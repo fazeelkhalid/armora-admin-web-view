@@ -26,11 +26,15 @@ class Devices extends Model
         'operating_system',
         'auth_key',
         'is_verified',
+        'is_login',
+        'is_active',
         'token'
     ];
 
     protected $casts = [
         'is_verified' => 'boolean',
+        'is_login' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public function scan_reports()
