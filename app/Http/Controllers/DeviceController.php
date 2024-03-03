@@ -22,34 +22,38 @@ class DeviceController extends Controller
     public function addSystem(Request $request){
 
         $request->validate([
-            'system_name' => 'required|string|max:64|min:5',
-            'mac_address' => [
-                'required',
-                'regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/i',
-                Rule::unique('devices', 'MAC_address'),
-            ],
             'operating_system' => 'required|string|in:linux,window',
+            'password' => 'required|min:6',
+            'device_name' => [
+                'required',
+                'max:32',
+                'min:5',
+                Rule::unique('devices')->where(function ($query) use ($request) {
+                    return $query->where('user_id', auth()->user()->id);
+                }),
+            ],
         ], [
-            'system_name.required' => 'The system name is required.',
-            'system_name.string' => 'The system name must be a string.',
-            'system_name.max' => 'The system name must not exceed 64 characters.',
-            'system_name.min' => 'The system name must be at least 5 characters.',
-            
-            'mac_address.required' => 'The MAC address is required.',
-            'mac_address.regex' => 'The MAC address is not in a valid format.',
-            'mac_address.unique' => 'The MAC address is already in use.',
+            'device_name.required' => 'The device name is required.',
+            'device_name.string' => 'The device name must be a string.',
+            'device_name.max' => 'The device name must not exceed 64 characters.',
+            'device_name.min' => 'The device name must be at least 5 characters.',
+            'device_name.unique' => 'The device name `'.$request->input('device_name').'` already exist.',
             
             'operating_system.required' => 'The operating system is required.',
             'operating_system.string' => 'The operating system must be a string.',
-            'operating_system.in' => 'The operating system must be either "Linux" or "Window".',
+            'operating_system.in' => 'The operating system must be either "linux" or "window".',
+            
+            'password.required' => 'The password is required.',
+            'password.min' => 'The password must be at least 6 characters.',
         ]);
         
 
         $device = new Devices();
         $device->code = GenerateIDController::getID('de_');
         $device->user_id = auth()->user()->id;
-        $device->device_name = $request->input('system_name');
-        $device->MAC_address = $request->input('mac_address');
+        $device->device_name = $request->input('device_name');
+        $device->MAC_address = 'TEST-DATA';
+        $device->password = $request->input('password');
         $device->operating_system = $request->input('operating_system');
         $device->auth_key = GenerateIDController::getAuthKey();
         $device->token = GenerateIDController::getToken();

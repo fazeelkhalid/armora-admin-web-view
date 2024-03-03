@@ -399,17 +399,17 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="mb-3">
-                                    <label class="control-label form-label">Client Name</label>
-                                    <input class="form-control" placeholder="Insert Client Name" type="text"
-                                        name="system_name" id="client-title" required />
-                                    <div class="invalid-feedback">Please provide a valid client name</div>
+                                    <label class="control-label form-label">Device Name</label>
+                                    <input class="form-control" placeholder="Insert Device Name" type="text"
+                                        name="device_name" id="client-title" required />
+                                    <div class="invalid-feedback">Please provide a valid device name</div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="control-label form-label">MAC Address</label>
-                                    <input class="form-control" placeholder="00-B0-D0-63-C2-26" type="text"
-                                        name="mac_address" required />
-                                    <div class="invalid-feedback">Please provide a valid MAC Address</div>
+                                    <label class="control-label form-label">Password</label>
+                                    <input class="form-control" placeholder="Device password" type="password"
+                                        name="password" required />
+                                    <div class="invalid-feedback">Please provide a valid password</div>
                                 </div>
 
                                 <div class="col-12">

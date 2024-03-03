@@ -26,9 +26,8 @@ class Devices extends Model
         'operating_system',
         'auth_key',
         'is_verified',
-        'is_login',
-        'is_active',
-        'token'
+        'token',
+        'password',
     ];
 
     protected $casts = [
