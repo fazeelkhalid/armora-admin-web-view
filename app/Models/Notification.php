@@ -32,13 +32,16 @@ class Notification extends Model
     ];
 
 
-    public static function createNotification($obj_id, $type, $MAC){
-        return self::create([
-            'code' =>  GenerateIDController::getID('nf_'),
-            'user_id' => User::getUserIdByMacAddress($MAC) ?? 1,
-            'obj_id' => $obj_id,
-            'type' => $type
-        ]);
+    public static function createNotification($obj_id, $type, $token){
+        $user_id = User::getUserIdByToken($token);
+        if($user_id) {
+            return self::create([
+                'code' =>  GenerateIDController::getID('nf_'),
+                'user_id' => $user_id,
+                'obj_id' => $obj_id,
+                'type' => $type
+            ]);
+        }
     } 
 
     public static function getNotification(){

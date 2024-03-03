@@ -92,18 +92,28 @@ class ScanController extends Controller
         $device = Devices::where('token', $token)->first();
     
         if ($device && $device->is_verified) {
+
+            $existingScan = Scans::where('ip', $request->input('ip'))
+                ->where('token', $token)
+                ->whereIn('status', [ScanReportStatusType::PENDING, ScanReportStatusType::INPROGRESS])
+                ->first();
+
+            if ($existingScan) {
+                return response()->json(['error' => 'Scan already in progress on this device'], 400);
+            }
+
             $scan = new Scans([
                 'ip' => $request->input('ip'),
                 'token' => $token,
                 'device_name' => $device->device_name,
                 'code' => GenerateIDController::getID('ss_'),
                 'status' => ScanReportStatusType::PENDING,
-                'device_id' => $device->code, // Assuming there is a foreign key relationship
+                'device_id' => $device->code, 
             ]);
     
-            $scan->save();
-    
+            $scan->save();    
             return response()->json(['message' => 'Scan created successfully'], 201);
+                    
         } elseif ($device && !$device->is_verified) {
             return response()->json(['error' => 'Device not verified'], 400);
         } else {
@@ -117,7 +127,7 @@ class ScanController extends Controller
         $responses = [];
         if ($pendingScans->isNotEmpty()) {
             foreach ($pendingScans as $pendingScan) {
-                $name = $pendingScan->device_name.' / ' . str_replace('vu_', '', $pendingScan->code) . '|'.$pendingScan->token;
+                $name = $pendingScan->code;
                 $response = $this->scan($pendingScan->ip, $name);
         
                 if ($response->status() == 200) {
@@ -210,34 +220,51 @@ class ScanController extends Controller
                     
                     $csv = new CSVScrapperController();
                     $fileContent = $csv->convertCsvToJson($fileContent);
-                    $parseFileName = $wordsArray = explode('|', $scanName);
-                    $filename = $parseFileName[0];
-                    $token = $parseFileName[1];
+                    
 
-                   
+                    $scan = Scans::where('code', $scanName)->first();
                     
-                    $scanReport = scanReport::create([
-                        'code'=> GenerateIDController::getID('sr_'),
-                        'device_id' => Devices::getCodeByToken($token)??'de_dbd24775f8ec4',
-                        'report_name' => $filename
-                    ]);
-                    
-                    
-                    foreach ($fileContent as $data) {
-                        $data['code'] = GenerateIDController::getID('vu_');
-                        $data['scan_report_id'] = $scanReport->code;
-                        Vulnerability::create($data);
+                    if ($scan && $scan->status == ScanReportStatusType::INPROGRESS) {
+                        
+                        $token = $scan->token;
+                        $device_id = Devices::getCodeByToken($token);
+                        $report_name = $scan->device_name . ' / ' . str_replace('ss_', '', $scan->code);
+                        if($device_id){
+                            $scanReport = scanReport::create([
+                                'code'=> GenerateIDController::getID('sr_'),
+                                'device_id' => $device_id,
+                                'report_name' => $report_name
+                            ]);
+                            
+                            
+                            foreach ($fileContent as $data) {
+                                $data['code'] = GenerateIDController::getID('vu_');
+                                $data['scan_report_id'] = $scanReport->code;
+                                Vulnerability::create($data);
+                            }
+                            
+                            Scans::markScansAsCompleted($scan->code);
+                            Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $token);
+
+                            return response()->json([
+                                'filename' => $report_name,
+                                'created_date' => $formattedDate,
+                                'data' => $fileContent
+                            ]);
+                        }
+                        return response()->json([
+                            'message' => "Device not found with the help of the token",
+                            'device_token' =>  $scanName
+                            
+                        ]);
                     }
                     
-                    Scans::markScansAsCompleted($token);
-                    Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $filename);
-                    
                     return response()->json([
-                        'filename' => $filename,
-                        'created_date' => $formattedDate,
-                        'data' => $fileContent
+                        'message' => "scan not found",
+                        'scan_code' => $scanName
+                        
                     ]);
- 
+                    
                 } else {
                     return response()->json([
                         'error' => 'Download request failed with status code ' . $downloadResponse->status(),

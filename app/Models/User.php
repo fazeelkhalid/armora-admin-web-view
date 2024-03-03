@@ -51,9 +51,9 @@ class User extends Authenticatable
         return $this->hasMany(Device::class, 'user_id', 'id');
     }
 
-    public static function getUserIdByMacAddress($macAddress)
+    public static function getUserIdByToken($token)
     {
-        $device = Devices::where('MAC_address', $macAddress)->first();
+        $device = Devices::where('token', $token)->first();
 
         return $device ? $device->user_id : null;
     }

@@ -37,9 +37,9 @@ class Scans extends Model
             ->get();
     }
 
-    public static function markScansAsCompleted($token)
+    public static function markScansAsCompleted($code)
     {
-        self::where('token', $token)
+        self::where('code', $code)
             ->where('status', ScanReportStatusType::INPROGRESS)
             ->update(['status' => ScanReportStatusType::COMPLETED]);
     }    
