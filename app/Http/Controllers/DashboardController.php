@@ -61,21 +61,18 @@ class DashboardController extends Controller
         return view('admin.dashboard', ['dashboardData' => $dashboardData]);
     }
 
-    public function appDashboard(Request $request)
+    public function appDashboard()
     {
-        // Check if token is required
-        if (!$request->has('token')) {
-            return response()->json(['error' => 'Token Missing'], 400);
-        }
+        $device = auth()->user();
         
-        $token = $request->input('token');
-
+       
         $dashboardData = [];
-        $dashboardData['total_inprogress'] = Scans::inProgressScanCountByToken($token);
-        $dashboardData['total_vulnerability'] = Vulnerability::VulnerabilityCountByToken($token);
-        $dashboardData['total_report'] = scanReport::ScanReportCountByToken($token);
-        $dashboardData['client_name'] = Devices::getDeviceNameByToken($token);
+        $dashboardData['total_inprogress'] = Scans::inProgressScanCountByCode($device->code);
+        $dashboardData['total_vulnerability'] = Vulnerability::VulnerabilityCountByCode($device->code);
+        $dashboardData['total_report'] = scanReport::ScanReportCountByCode($device->code);
+        $dashboardData['client_name'] = $device->device_name;
 
+        
         // return
         return response()->json($dashboardData);
     }

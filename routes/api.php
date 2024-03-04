@@ -46,25 +46,24 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/getdevices/{device}', [DeviceController::class, 'getdevices']);
-
 Route::middleware([APIKeyMiddleware::class])->group(function () {
-    Route::post('/device/verify', [DeviceController::class, 'verifyDeviceByKey']);
-    Route::post('/device/verification', [DeviceController::class, 'checkDeviceVerification']);
-    Route::post('/dashboard', [DashboardController::class, 'appDashboard']);
-    
-    Route::middleware([StartScan::class])->group(function () {
-        Route::post('/scan', [ScanController::class, 'storeScanRequest']);
-    });
-});
-
-
-
-Route::group([ 'middleware' => 'api', 'prefix' => 'device' ], function ($router) {
-    Route::post('/login', [DeviceController::class, 'deviceLogin']);
-    Route::middleware(['auth:api'])->group(function () {
-        Route::put('/login-status', [DeviceController::class, 'updateDeviceStatus']);
-        Route::put('/logout', [DeviceController::class, 'logout']);
+    Route::group([ 'middleware' => 'api', 'prefix' => 'device' ], function ($router) {
+        Route::post('/login', [DeviceController::class, 'deviceLogin']);
         
+        Route::middleware(['auth:api'])->group(function () {
+        
+            Route::put('/login-status', [DeviceController::class, 'updateDeviceStatus']);
+            Route::put('/logout', [DeviceController::class, 'logout']);
+            
+
+            Route::post('/verify', [DeviceController::class, 'verifyDeviceByKey']);
+            Route::get('/verification', [DeviceController::class, 'checkDeviceVerification']);
+            Route::get('/dashboard', [DashboardController::class, 'appDashboard']);
+            
+            Route::middleware([StartScan::class])->group(function () {
+                Route::post('/scan', [ScanController::class, 'storeScanRequest']);
+            });
+
+        });
     });
 });

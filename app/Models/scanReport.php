@@ -38,9 +38,9 @@ class scanReport extends Model
         })->count();
     }
 
-    public static function ScanReportCountByToken($token){
-        return scanReport::whereHas('device', function ($query) use ($token) {
-            $query->where('token', $token);
+    public static function ScanReportCountByCode($code){
+        return scanReport::whereHas('device', function ($query) use ($code) {
+            $query->where('code', $code);
         })->count();
     }
 

@@ -68,6 +68,7 @@ class Devices extends Model implements Authenticatable, JWTSubject
      */
     public static function verifyDeviceByKey($authKey)
     {
+       
         $device = self::where('auth_key', $authKey)
             ->first();
 
@@ -87,21 +88,9 @@ class Devices extends Model implements Authenticatable, JWTSubject
         return $Response;;
     }
 
-
-    public static function verifyDeviceByToken($token)
-    {
-        $device = self::where('token', $token)->first();
-
-        return $device && $device->is_verified ? 1 : 0;
-    }
-
-
-    
-
     public static function devicesCount(){
         return Devices::where('user_id', auth()->user()->id)->count();
     }
-
 
     public static function deleteDeviceAndRelatedRecords($deviceCode)
     {
@@ -128,18 +117,6 @@ class Devices extends Model implements Authenticatable, JWTSubject
         else{
             return null;   
         }
-    }
-
-
-    public static function getDeviceNameByToken($token)
-    {
-        $device = self::where('token', $token)->first();
-
-        if ($device) {
-            return $device->device_name;
-        }
-
-        return null; // Token not found or device not exists
     }
 
     public function getJWTIdentifier()

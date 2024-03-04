@@ -16,7 +16,7 @@ class APIKeyMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $apiKey = $request->header('Authorization');
+        $apiKey = $request->header('API_KEY');
         $expectedApiKey = env('API_KEY');
 
         if ($apiKey && $apiKey === $expectedApiKey) {

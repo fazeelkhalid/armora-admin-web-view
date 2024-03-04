@@ -89,11 +89,12 @@ class ScanController extends Controller
     public function storeScanRequest(Request $request)
     {
         $device = auth()->user();
+    
         
         if ($device && $device->is_verified) {
 
             $existingScan = Scans::where('ip', $request->input('ip'))
-                ->where('token', $token)
+                ->where('device_code', $device->code)
                 ->whereIn('status', [ScanReportStatusType::PENDING, ScanReportStatusType::INPROGRESS])
                 ->first();
 
@@ -105,6 +106,7 @@ class ScanController extends Controller
                 'ip' => $request->input('ip'),
                 'token' => $token,
                 'device_name' => $device->device_name,
+                'device_code' => $device->code,
                 'code' => GenerateIDController::getID('ss_'),
                 'status' => ScanReportStatusType::PENDING,
                 'device_id' => $device->code, 

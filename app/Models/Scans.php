@@ -18,12 +18,13 @@ class Scans extends Model
         'ip', 
         'token', 
         'status',
-        'device_name'
+        'device_name',
+        'device_code'
     ];
     
-    public static function inProgressScanCountByToken($token)
+    public static function inProgressScanCountByCode($code)
     {
-        return self::where('token', $token) ->where(function($query) {
+        return self::where('device_code', $code) ->where(function($query) {
                     $query->where('status', ScanReportStatusType::INPROGRESS)
                         ->orWhere('status', ScanReportStatusType::PENDING);
                 })

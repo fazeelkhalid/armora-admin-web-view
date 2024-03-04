@@ -82,21 +82,6 @@ class DeviceController extends Controller
         return view('admin.systemsVulnerabilities', ['devices' => $devices, 'reportCount' => $reportCount]);
     }
 
-    public function getdevices($searchDevice)
-    {
-        $devices = Devices::with('scan_reports')
-        ->where('user_id', auth()->user()->id)
-        ->where(function ($query) use ($searchDevice) {
-            $query->whereRaw('LOWER(device_name) LIKE ?', ['%' . strtolower($searchDevice) . '%'])
-                ->orWhereRaw('LOWER(MAC_address) LIKE ?', ['%' . strtolower($searchDevice) . '%'])
-                ->orWhereRaw('LOWER(operating_system) LIKE ?', ['%' . strtolower($searchDevice) . '%']);
-        })
-        ->get();
-
-        print_r($devices);
-        die();
-        
-    }
     
     public function delete($id){
         $id = 'de_'.$id;
@@ -115,16 +100,11 @@ class DeviceController extends Controller
 
     }
     
-    public function checkDeviceVerification(Request $request)
+    public function checkDeviceVerification()
     {
-        // Validate the request data
-        $request->validate([
-            'token' => 'required|string',
-        ]);
-
-        $verificationStatus = Devices::verifyDeviceByToken($request->input('token'));
+        $device = auth()->user();
         
-        if ($verificationStatus == 1) {
+        if ($device->is_verified == 1) {
             return response()->json([ 'message' => 'Device is verified.'], 200);
         } else {
             return response()->json([ 'message' => 'Device is not verified.'], 404);
