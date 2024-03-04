@@ -88,9 +88,8 @@ class ScanController extends Controller
 
     public function storeScanRequest(Request $request)
     {
-        $token = $request->input('token');
-        $device = Devices::where('token', $token)->first();
-    
+        $device = auth()->user();
+        
         if ($device && $device->is_verified) {
 
             $existingScan = Scans::where('ip', $request->input('ip'))

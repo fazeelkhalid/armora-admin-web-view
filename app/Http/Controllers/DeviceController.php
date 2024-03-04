@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Devices;
 use App\Models\Notification;
@@ -53,7 +56,7 @@ class DeviceController extends Controller
         $device->user_id = auth()->user()->id;
         $device->device_name = $request->input('device_name');
         $device->MAC_address = 'TEST-DATA';
-        $device->password = $request->input('password');
+        $device->password = bcrypt($request->input('password'));
         $device->operating_system = $request->input('operating_system');
         $device->auth_key = GenerateIDController::getAuthKey();
         $device->token = GenerateIDController::getToken();
@@ -100,14 +103,6 @@ class DeviceController extends Controller
         return Devices::deleteDeviceAndRelatedRecords($id);
     }
 
-
-    /**
-     * Verify a device based on Auth-Key and MAC address for the very first time.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    
     public function verifyDeviceByKey(Request $request)
     {
         $request->validate([
@@ -119,14 +114,7 @@ class DeviceController extends Controller
         );
 
     }
-
-
-    /**
-     * Check if a device is verified based on MAC address.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function checkDeviceVerification(Request $request)
     {
         // Validate the request data
@@ -143,4 +131,34 @@ class DeviceController extends Controller
         }
     }
     
+
+    public function deviceLogin(Request $request)
+    {
+        $credentials = request(['device_name', 'password']);
+
+        if (! $token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized Device'], 401);
+        }
+        
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60
+        ]);
+    }
+
+    public function updateDeviceStatus(Request $request)
+    {
+        
+        $device = auth()->user();
+        $device->update(['is_active' => true]);
+    
+
+        return  response()->json($device);
+    }
+
+    public function logout(){
+        auth()->logout();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
 }

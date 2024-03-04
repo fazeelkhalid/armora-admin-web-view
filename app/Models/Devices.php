@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
+
 use DB;
 
-class Devices extends Model
+class Devices extends Model implements Authenticatable, JWTSubject
 {
+    use AuthenticatableTrait;
+
     protected $table = 'devices';
 
     protected $primaryKey = 'code';
@@ -27,8 +33,15 @@ class Devices extends Model
         'auth_key',
         'is_verified',
         'token',
+        'is_active',
         'password',
     ];
+    
+    protected $hidden = [
+        'password',
+    ];
+
+    
 
     protected $casts = [
         'is_verified' => 'boolean',
@@ -129,5 +142,13 @@ class Devices extends Model
         return null; // Token not found or device not exists
     }
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
 
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }

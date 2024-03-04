@@ -22,6 +22,16 @@ use App\Http\Middleware\Validator\StartScan;
 |
 */
 
+use App\Http\Controllers\AuthController;
+
+Route::group([ 'middleware' => 'api', 'prefix' => 'auth' ], function ($router) {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('me', [AuthController::class, 'me']);
+});
+
+
 
 
 Route::middleware(['web', 'auth'])->group(function () {
@@ -38,15 +48,6 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/getdevices/{device}', [DeviceController::class, 'getdevices']);
 
-
-
-
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::middleware([APIKeyMiddleware::class])->group(function () {
     Route::post('/device/verify', [DeviceController::class, 'verifyDeviceByKey']);
     Route::post('/device/verification', [DeviceController::class, 'checkDeviceVerification']);
@@ -54,5 +55,16 @@ Route::middleware([APIKeyMiddleware::class])->group(function () {
     
     Route::middleware([StartScan::class])->group(function () {
         Route::post('/scan', [ScanController::class, 'storeScanRequest']);
+    });
+});
+
+
+
+Route::group([ 'middleware' => 'api', 'prefix' => 'device' ], function ($router) {
+    Route::post('/login', [DeviceController::class, 'deviceLogin']);
+    Route::middleware(['auth:api'])->group(function () {
+        Route::put('/login-status', [DeviceController::class, 'updateDeviceStatus']);
+        Route::put('/logout', [DeviceController::class, 'logout']);
+        
     });
 });
