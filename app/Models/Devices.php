@@ -35,6 +35,7 @@ class Devices extends Model implements Authenticatable, JWTSubject
         'token',
         'is_active',
         'password',
+        'current_ip',
     ];
     
     protected $hidden = [

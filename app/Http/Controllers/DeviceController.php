@@ -129,10 +129,13 @@ class DeviceController extends Controller
 
     public function updateDeviceStatus(Request $request)
     {
+        $request->validate([
+            'ip' => 'required|ip',
+        ]);
         
         $device = auth()->user();
-        $device->update(['is_active' => true]);
-    
+        $device->update(['is_active' => true, 'current_ip' => $request->input('ip')]);
+
 
         return  response()->json($device);
     }
