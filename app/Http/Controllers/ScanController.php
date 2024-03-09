@@ -227,8 +227,7 @@ class ScanController extends Controller
                     
                     if ($scan && $scan->status == ScanReportStatusType::INPROGRESS) {
                         
-                        $token = $scan->token;
-                        $device_id = Devices::getCodeByToken($token);
+                        $device_id = $scan->device_code;
                         $report_name = $scan->device_name . ' / ' . str_replace('ss_', '', $scan->code);
                         if($device_id){
                             $scanReport = scanReport::create([
@@ -245,7 +244,7 @@ class ScanController extends Controller
                             }
                             
                             Scans::markScansAsCompleted($scan->code);
-                            Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $token);
+                            Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $device_id);
 
                             return response()->json([
                                 'filename' => $report_name,

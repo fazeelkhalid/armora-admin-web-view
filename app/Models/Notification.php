@@ -32,8 +32,8 @@ class Notification extends Model
     ];
 
 
-    public static function createNotification($obj_id, $type, $token){
-        $user_id = User::getUserIdByToken($token);
+    public static function createNotification($obj_id, $type, $device_code){
+        $user_id = User::getUserIdByDeviceCode($device_code);
         if($user_id) {
             return self::create([
                 'code' =>  GenerateIDController::getID('nf_'),
