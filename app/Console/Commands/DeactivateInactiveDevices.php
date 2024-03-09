@@ -16,7 +16,7 @@ class DeactivateInactiveDevices extends Command
         $inactiveThreshold = now()->subSeconds(8);
 
         Devices::where('updated_at', '<=', $inactiveThreshold)
-            ->update(['is_active' => false]);
+            ->update(['is_active' => false, 'current_ip' => null]);
 
         $this->info('Inactive devices deactivated successfully.');
     }

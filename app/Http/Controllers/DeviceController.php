@@ -59,7 +59,6 @@ class DeviceController extends Controller
         $device->password = bcrypt($request->input('password'));
         $device->operating_system = $request->input('operating_system');
         $device->auth_key = GenerateIDController::getAuthKey();
-        $device->token = GenerateIDController::getToken();
         $device->is_verified = false;
         $device->save();
         
@@ -129,12 +128,9 @@ class DeviceController extends Controller
 
     public function updateDeviceStatus(Request $request)
     {
-        $request->validate([
-            'ip' => 'required|ip',
-        ]);
-        
+
         $device = auth()->user();
-        $device->update(['is_active' => true, 'current_ip' => $request->input('ip')]);
+        $device->update(['is_active' => true, 'current_ip' => $request->ip()]);
 
 
         return  response()->json($device);

@@ -14,9 +14,8 @@ class Scans extends Model
     protected $table = 'scans';
     
     protected $fillable = [
-        'code', 
-        'ip', 
-        'token', 
+        'code',
+        'ip',
         'status',
         'device_name',
         'device_code'

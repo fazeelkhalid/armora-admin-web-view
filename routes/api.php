@@ -10,7 +10,7 @@ use App\Http\Controllers\DashboardController;
 
 use App\Http\Middleware\APIKeyMiddleware;
 use App\Http\Middleware\NessusAuthMiddleWare;
-use App\Http\Middleware\Validator\StartScan;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -48,22 +48,19 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware([APIKeyMiddleware::class])->group(function () {
     Route::group([ 'middleware' => 'api', 'prefix' => 'device' ], function ($router) {
+        
+        Route::post('/verify', [DeviceController::class, 'verifyDeviceByKey']);
         Route::post('/login', [DeviceController::class, 'deviceLogin']);
         
         Route::middleware(['auth:api'])->group(function () {
-        
+            Route::get('/verification', [DeviceController::class, 'checkDeviceVerification']);
+            
             Route::put('/login-status', [DeviceController::class, 'updateDeviceStatus']);
             Route::put('/logout', [DeviceController::class, 'logout']);
             
-
-            Route::post('/verify', [DeviceController::class, 'verifyDeviceByKey']);
-            Route::get('/verification', [DeviceController::class, 'checkDeviceVerification']);
             Route::get('/dashboard', [DashboardController::class, 'appDashboard']);
-            
-            Route::middleware([StartScan::class])->group(function () {
-                Route::post('/scan', [ScanController::class, 'storeScanRequest']);
-            });
-
+            Route::post('/scan', [ScanController::class, 'storeScanRequest']);
+           
         });
     });
 });

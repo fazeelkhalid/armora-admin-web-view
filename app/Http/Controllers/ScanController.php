@@ -91,9 +91,9 @@ class ScanController extends Controller
         $device = auth()->user();
     
         
-        if ($device && $device->is_verified) {
+        if ($device && $device->is_verified && $device->current_ip) {
 
-            $existingScan = Scans::where('ip', $request->input('ip'))
+            $existingScan = Scans::where('ip', $device->current_ip)
                 ->where('device_code', $device->code)
                 ->whereIn('status', [ScanReportStatusType::PENDING, ScanReportStatusType::INPROGRESS])
                 ->first();
@@ -103,13 +103,11 @@ class ScanController extends Controller
             }
 
             $scan = new Scans([
-                'ip' => $request->input('ip'),
-                'token' => $token,
+                'ip' => $device->current_ip,
                 'device_name' => $device->device_name,
                 'device_code' => $device->code,
                 'code' => GenerateIDController::getID('ss_'),
                 'status' => ScanReportStatusType::PENDING,
-                'device_id' => $device->code, 
             ]);
     
             $scan->save();    
@@ -117,6 +115,8 @@ class ScanController extends Controller
                     
         } elseif ($device && !$device->is_verified) {
             return response()->json(['error' => 'Device not verified'], 400);
+        } elseif ($device && !$device->current_ip) {
+            return response()->json(['error' => 'Device not connected with the server'], 400);
         } else {
             return response()->json(['error' => 'Device not found'], 404);
         }

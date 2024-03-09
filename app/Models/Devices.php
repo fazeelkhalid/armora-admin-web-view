@@ -32,7 +32,6 @@ class Devices extends Model implements Authenticatable, JWTSubject
         'operating_system',
         'auth_key',
         'is_verified',
-        'token',
         'is_active',
         'password',
         'current_ip',
@@ -76,8 +75,9 @@ class Devices extends Model implements Authenticatable, JWTSubject
         $Response = null;
         if ($device) {
             if (!$device->is_verified) {
-                $device->update(['is_verified' => true]);
-                $Response = response()->json(['message' => 'Device verification successful', 'token'=> $device->token], 200);                
+                // $device->update(['is_verified' => true]);
+                $token = auth('api')->login($device);
+                $Response = response()->json(['message' => 'Device verification successful',  'access_token' => $token,], 200);                
             } else {
                 $Response = response()->json(['error' => 'Auth Key expired or already used'], 400);
             }

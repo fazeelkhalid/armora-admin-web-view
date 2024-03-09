@@ -22,7 +22,7 @@ class APIKeyMiddleware
         if ($apiKey && $apiKey === $expectedApiKey) {
             return $next($request);
         } else {
-            return response()->json(['error' => 'API key not valid'], 401);
+            return response()->json(['error' => 'ARMORA API key not valid'], 401);
         }
     }
 }
