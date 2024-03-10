@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     </meta>
-    <title>18:47:3d:7a:0f:4b</title>
+    <title>{{ $report_name }} - {{ $created_at }}</title>
     <style type="text/css" media="all">
     @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800")
     </style>
@@ -239,8 +239,27 @@
         padding-top: 15px;
         padding-bottom: 15px;
     }
+
+    #printButton {
+        padding: 20px;
+        font-size: 18px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    #buttonContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
     </style>
     <script type="text/javascript">
+    document.getElementById("printButton").addEventListener("click", function() {
+        window.print();
+    });
     var toggle = function(id) {
         var div = document.getElementById(id);
         var button = document.getElementById(id + '-show');
@@ -362,9 +381,14 @@
             el.setAttribute('height', height);
         });
         </script>
+
         <div class="clear"></div>
-        <h3 style="font-size: 24px; font-weight: 300;">%REPORT_ID%</h3>
-        <h4 style="color: #999; border-bottom: 1px dotted #ccc; padding: 0 0 20px 0; margin: 0 0 20px 0;">%REPORT_TIME%
+        <div id="buttonContainer">
+            <button id="printButton">Print Report</button>
+        </div>
+        <h3 style="font-size: 24px; font-weight: 300;">{{ $report_name }}</h3>
+        <h4 style="color: #999; border-bottom: 1px dotted #ccc; padding: 0 0 20px 0; margin: 0 0 20px 0;">
+            {{ $created_at }}
             UTC</h4>
         <div class="clear"></div>
         <div xmlns="" id="idp45661628773776" style="display: block;" class="table-wrapper ">
@@ -383,27 +407,27 @@
                         <td class="#91243E" style=" " colspan="1">
                             <div
                                 style="box-sizing: border-box; font-size: 45px; font-weight: 300; line-height: 80px; color: #fff; text-align: center; background: #91243E; border-radius: 3px 3px 0 0; width: 98%; margin: 0;">
-                                %CRITICAL_COUNT%</div>
+                                {{ $count[0] }}</div>
                         </td>
                         <td class="#DD4B50" style=" " colspan="1">
                             <div
                                 style="box-sizing: border-box; font-size: 45px; font-weight: 300; line-height: 80px; color: #fff; text-align: center; background: #DD4B50; border-radius: 3px 3px 0 0; width: 98%; margin: 0;">
-                                %HIGH_COUNT%</div>
+                                {{ $count[1] }}</div>
                         </td>
                         <td class="#F18C43" style=" " colspan="1">
                             <div
                                 style="box-sizing: border-box; font-size: 45px; font-weight: 300; line-height: 80px; color: #fff; text-align: center; background: #F18C43; border-radius: 3px 3px 0 0; width: 98%; margin: 0;">
-                                %MEDIUM_COUNT%</div>
+                                {{ $count[2] }}</div>
                         </td>
                         <td class="#F8C851" style=" " colspan="1">
                             <div
                                 style="box-sizing: border-box; font-size: 45px; font-weight: 300; line-height: 80px; color: #fff; text-align: center; background: #F8C851; border-radius: 3px 3px 0 0; width: 98%; margin: 0;">
-                                %LOW_COUNT%</div>
+                                {{ $count[3] }}</div>
                         </td>
                         <td class="#67ACE1" style=" " colspan="1">
                             <div
                                 style="box-sizing: border-box; font-size: 45px; font-weight: 300; line-height: 80px; color: #fff; text-align: center; background: #67ACE1; border-radius: 3px 3px 0 0; width: 98%; margin: 0;">
-                                %INFO_CoUNT%</div>
+                                {{ $count[4] }}</div>
                         </td>
                     </tr>
                     <tr class="">
@@ -443,9 +467,16 @@
                 <li style="font-size: 14px;">
                     <a href="#idp45661628772112" style="font-weight: 700;">Vulnerabilities by category</a>
                     <ul style="list-style-type: disc; margin: 10px 0 0 20px;">
+                        @foreach($vulnerabilities as $vulnerability )
+                        <?php 
+                        $code = str_replace('vu_', '', $vulnerability->code) ;
+                        ?>
                         <li style="margin: 0 0 10px 0; color: #000000;">
-                            <a href="#%VULNERABILITY_id%">%VULNERABILITY_id% - %VULNERABILITY_CODE%</a>
+                            <a href="#{{ $code }}">{{ $code }}
+                                -
+                                {{ $vulnerability->name }}</a>
                         </li>
+                        @endforeach
                     </ul>
                 </li>
             </ul>
@@ -454,22 +485,25 @@
             <h5 xmlns="" style="font-size: 16px; font-weight: 700; margin-bottom: 10px; margin-top: 20px;">
                 Vulnerabilities</h5>
             <h2 xmlns="" class=""></h2>
-            <div xmlns="" id="%VULNERABILITY_id%"
+            @foreach($vulnerabilities as $vulnerability )
+            <?php 
+                $code = str_replace('vu_', '', $vulnerability->code) ;
+            ?>
+            <div xmlns="" id="{{ $code }}"
                 style="box-sizing: border-box; width: 100%; margin: 0 0 10px 0; padding: 5px 10px; background: #343a40; font-weight: 700; font-size: 14px; line-height: 20px; color: #fff;"
-                class="" onclick="toggleSection('%VULNERABILITY_id%-container');"
-                onmouseover="this.style.cursor='pointer'">
-                %VULNERABILITY_id% - %VULNERABILITY_CODE%
-                <div id="%VULNERABILITY_id%-toggletext" style="float: right; text-align: center; width: 8px;">
+                class="" onclick="toggleSection('{{ $code }}-container');" onmouseover="this.style.cursor='pointer'">
+                {{ $code }} - {{ $vulnerability->name }}
+                <div id="{{ $code }}-toggletext" style="float: right; text-align: center; width: 8px;">
                     -
                 </div>
             </div>
-            <div xmlns="" id="%VULNERABILITY_id%-container" style="margin: 0 0 45px 0;" class="section-wrapper">
+            <div xmlns="" id="{{ $code }}-container" style="margin: 0 0 45px 0;" class="section-wrapper">
                 <div class="details-header">
                     Synopsis
                     <div class="clear"></div>
                 </div>
                 <div style="line-height: 20px; padding: 0 0 20px 0; overflow-wrap: break-word">
-                    %SYNOPSIS%
+                    {{ $vulnerability->synopsis }}
                     <div class="clear"></div>
                 </div>
                 <div class="details-header">
@@ -477,7 +511,7 @@
                     <div class="clear"></div>
                 </div>
                 <div style="line-height: 20px; padding: 0 0 20px 0; overflow-wrap: break-word">
-                    %DESCRIPTION%
+                    {{ $vulnerability->description }}
                     <div class="clear"></div>
                 </div>
                 <div class="details-header">
@@ -485,7 +519,7 @@
                     <div class="clear"></div>
                 </div>
                 <div style="line-height: 20px; padding: 0 0 20px 0; overflow-wrap: break-word">
-                    %SOLUTION%
+                    {{ $vulnerability->solution }}
                     <div class="clear"></div>
                 </div>
                 <div class="details-header">
@@ -493,15 +527,15 @@
                     <div class="clear"></div>
                 </div>
                 <div style="line-height: 20px; padding: 0 0 20px 0; overflow-wrap: break-word">
-                    %RISK%
+                    {{ $vulnerability->risk }}
                     <div class="clear"></div>
                 </div>
                 <div class="details-header">
-                    Plugin Information
+                    Solution
                     <div class="clear"></div>
                 </div>
                 <div style="line-height: 20px; padding: 0 0 20px 0; overflow-wrap: break-word">
-                    %PLUGIN_INFORMATION%
+                    {{ $vulnerability->solution }}
                     <div class="clear"></div>
                 </div>
                 <div class="details-header">
@@ -512,12 +546,13 @@
                 <div class="clear"></div>
                 <div
                     style="box-sizing: border-box; width: 100%; background: #eee; overflow-wrap: break-word; font-family: monospace; padding: 20px; margin: 5px 0 20px 0;">
-                    %PLUGIN_OUTPUT%
+                    {{ $vulnerability->plugin_output }}
                     <div class="clear"></div>
                 </div>
                 <div class="clear"></div>
                 <div class="clear"></div>
             </div>
+            @endforeach
             <div xmlns="" class="clear"></div>
             <h2 xmlns="" class=""></h2>
         </div>

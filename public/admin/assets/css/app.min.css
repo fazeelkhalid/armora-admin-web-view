@@ -21393,3 +21393,11 @@ body[data-layout-color="dark"] .gantt .today-highlight {
     padding: 3px 2px;
     font-size: 1.23em;
 }
+
+.download-btn-inside{
+    position: absolute;
+    right: 25px;
+    top: 5px;
+    padding: 3px 2px;
+    font-size: 1.23em;
+}

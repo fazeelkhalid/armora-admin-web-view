@@ -15,16 +15,42 @@ $(document).ready(function() {
         var confirmDelete = confirm("Are you sure you want to delete this vulnerability?");
         if (confirmDelete) {
 			$.ajax({
-                url: `/report_/${reportName}`,
+                url: `/download-report/${reportName}`,
                 type: 'GET',
                 success: function(response) {
 				card.hide();
-				toastr.success("System deleted successfully");
+				toastr.success("Report Download successfully");
             },
             error: function(error) {
-				toastr.error("Deleting attempt unsuccessful.");
+				toastr.error("Report Download unsuccessful.");
                 }
             });
+        }
+    });
+	
+	
+	$(document).on('click', '.download-btn-inside', function() { 
+		var reportName = $(this).data('scanreportname');
+		
+        var confirmDelete = confirm("Are you sure you want to download this vulnerability?");
+        if (confirmDelete) {
+			$.ajax({
+            url: `/download-report/${reportName}`, // Update the route accordingly
+            type: 'GET',
+            success: function(response) {
+				console.log(response.htmlContent);
+                // Create a new window with the fetched HTML content
+                const downloadWindow = window.open('', '_blank');
+                downloadWindow.document.write(response.htmlContent);
+            },
+            error: function(error) {
+                if (error.status === 404 && error.responseJSON && error.responseJSON.error) {
+                    toastr.error(error.responseJSON.error);
+                } else {
+                    toastr.error("Downloading attempt unsuccessful.");
+                }
+            }
+        });
         }
     });
 });
@@ -121,6 +147,9 @@ $(document).ready(function() {
                 </ul>
             <a class="btn text-dark delete-btn-inside" data-scanreportname="{{ str_replace('sr_', '', $scanReport->code) }}">
 				<i class="mdi mdi-delete"></i>
+			</a>
+			<a class="btn text-dark download-btn-inside" data-scanreportname="{{ str_replace('sr_', '', $scanReport->code) }}">
+				<i class="mdi mdi-download-box"></i>
 			</a>
 			</div> <!-- end card-->
         	
