@@ -86,22 +86,34 @@ class ScanController extends Controller
         }
     }
 
-    public function storeScanRequest(Request $request)
-    {
+    public function storeScanForceFully($id){
+        $id = 'de_'.$id;
+        $device = Devices::where('code', $id)->where('user_id', auth()->user()->id)->first();
+        return $this-> storeScan($device);
+    }
+
+    public function storeScanRequest(Request $request){
         $device = auth()->user();
+        return $this-> storeScan($device);
+    }
+
     
+    public function storeScan($device)
+    {   
         
         if ($device && $device->is_verified && $device->current_ip) {
-
+            
             $existingScan = Scans::where('ip', $device->current_ip)
                 ->where('device_code', $device->code)
                 ->whereIn('status', [ScanReportStatusType::PENDING, ScanReportStatusType::INPROGRESS])
                 ->first();
-
+                
             if ($existingScan) {
+                
                 return response()->json(['error' => 'Scan already in progress on this device'], 400);
+                die("ABC");
             }
-
+           
             $scan = new Scans([
                 'ip' => $device->current_ip,
                 'device_name' => $device->device_name,

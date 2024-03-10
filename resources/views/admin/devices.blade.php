@@ -18,6 +18,7 @@
 <script>
 
 $(document).ready(function() {
+	
 	$(document).on('click', '.delete-system', function() { 
 	
 		var rowIndex = $(this).closest('tr')[0].rowIndex;
@@ -31,12 +32,34 @@ $(document).ready(function() {
 			table.row(rowIndex - 1).remove().draw();
 			$.ajax({
                 url: `/system_/${systemName}`,
-                type: 'DELETE',
+                type: 'get',
                 success: function(response) {
 				toastr.success("System deleted successfully");
             },
             error: function(error) {
 				toastr.error("Deleting attempt unsuccessful.");
+                }
+            });
+        }
+    });
+	
+	$(document).on('click', '.start-scan', function() { 
+	
+		var rowIndex = $(this).closest('tr')[0].rowIndex;
+
+		var systemName = $(this).closest('tr').data('devicename');
+		
+        var confirmDelete = confirm("Are you sure you want to start scan on this device?");
+		console.log(systemName);
+        if (confirmDelete) {
+			$.ajax({
+                url: `/start-scan/${systemName}`,
+                type: 'get',
+                success: function(response) {
+				toastr.success(response.message);
+            },
+            error: function(error) {
+				toastr.error(error.responseJSON.error);
                 }
             });
         }
@@ -124,15 +147,23 @@ $(document).ready(function() {
                                         {{ \Carbon\Carbon::parse($device->created_at)->format('d M Y') }}
                                     </td>
                                     <td>
-                                        @if($device->is_verified)
-                                        <span class="badge bg-success">Active</span>
+                                        @if($device->is_active)
+                                        <span class="badge bg-success">ON</span>
                                         @else
-                                        <span class="badge bg-danger">Deactive</span>
+                                        <span class="badge bg-danger">OFF</span>
                                         @endif
                                     </td>
                                     <td class="table-action">
                                         <a href="javascript:void(0);" class="action-icon delete-system"> <i
                                                 class="mdi mdi-delete"></i></a>
+										
+										@if($device->is_active)
+											<a href="javascript:void(0);" class="action-icon start-scan" style="color: green;" title="Start Scan"> <i
+                                                class="mdi mdi-restart"></i></a>
+										@else
+											<a class="action-icon start-scan" style="color: red; cursor: not-allowed;" title="Device Inactive" disabled>  <i class="mdi mdi-restart"></i> </a>
+                                        @endif
+                                        		
                                     </td>
                                 </tr>
                                 @endforeach

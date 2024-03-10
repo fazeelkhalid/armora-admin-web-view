@@ -14,7 +14,6 @@ use App\Http\Controllers\BackupController;
 use App\Http\Middleware\NessusAuthMiddleWare;
 
 
-
 Route::middleware([NessusAuthMiddleWare::class])->group(function () {
     Route::get('/start-scan-on-nessus-server', [ScanController::class, 'startNessusScan']);
     Route::get('/dump-nessus-data', [SchedulerController::class, 'dumpNessusData']);
@@ -46,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     // API END POINT
     Route::get('/vulnerability_/{id}', [VulnerabilityController::class, 'delete']);
     Route::get('/system_/{id}', [DeviceController::class, 'delete']);
+    Route::get('/start-scan/{id}', [ScanController::class, 'storeScanForceFully']);
     Route::get('/report_/{id}', [ScanReportController::class, 'delete']);
 
     // Notification

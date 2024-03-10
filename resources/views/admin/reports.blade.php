@@ -88,7 +88,7 @@ $(document).ready(function() {
 
                     @if ($vulnerabilityCount[$scanReport->report_name]['Total'] > 0)
                     <p class="text-muted font-13 my-3">
-                        {{ Str::limit(str_replace("\n", ' ', $scanReport->vulnerabilities->first()->description), 50, '...') }}
+                        {{ Str::limit(str_replace("\n", ' ', $scanReport->vulnerabilities->first()->description ?? ""), 50, '...') }}
                         <a href="{{ url('scan-report/' . str_replace('sr_', '', $scanReport->code)) }}" class="
                             fw-bold text-muted">view more</a>
                     </p>
