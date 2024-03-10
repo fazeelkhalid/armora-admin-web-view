@@ -10,9 +10,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\DownloadReportController;
 
 use App\Http\Middleware\NessusAuthMiddleWare;
 
+
+Route::get('/download-report/{id}', [DownloadReportController::class, 'getReportWithVulnerabilities']);
 
 Route::middleware([NessusAuthMiddleWare::class])->group(function () {
     Route::get('/start-scan-on-nessus-server', [ScanController::class, 'startNessusScan']);

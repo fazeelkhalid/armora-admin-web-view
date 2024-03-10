@@ -45,24 +45,26 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
-        $routePrefix = $request->route()->getPrefix();
-        if($routePrefix === 'api/device'){
-            
-            if ($exception instanceof TokenInvalidException) {
-                return response()->json(['error' => 'Invalid token'], 401);
-            }
-    
-            if ($exception instanceof TokenExpiredException) {
-                return response()->json(['error' => 'Token has expired'], 401);
-            }
-    
-            if ($exception instanceof AuthenticationException) {
-                return response()->json(['error' => 'Unauthenticated'], 401);
-            }
+        if($request && $request->route()){
+            $routePrefix = $request->route()->getPrefix();
+            if($routePrefix === 'api/device'){
+                
+                if ($exception instanceof TokenInvalidException) {
+                    return response()->json(['error' => 'Invalid token'], 401);
+                }
+        
+                if ($exception instanceof TokenExpiredException) {
+                    return response()->json(['error' => 'Token has expired'], 401);
+                }
+        
+                if ($exception instanceof AuthenticationException) {
+                    return response()->json(['error' => 'Unauthenticated'], 401);
+                }
 
-            \Log::error('Unhandled exception: ' . get_class($exception));
-            return response()->json(['error' => 'Something went wrong'], 500);
-            
+                \Log::error('Unhandled exception: ' . get_class($exception));
+                return response()->json(['error' => 'Something went wrong'], 500);
+                
+            }
         }
         return parent::render($request, $exception);
     }
