@@ -16,7 +16,7 @@ use App\Http\Middleware\NessusAuthMiddleWare;
 
 
 
-Route::get('/deactivate-inactive-devices', 'DeviceController@deactivateInactiveDevices')->name('devices.deactivateInactive');
+Route::get('/deactivate-inactive-devices', [DeviceController::class,'deactivateInactiveDevices'])->name('devices.deactivateInactive');
 
 Route::middleware([NessusAuthMiddleWare::class])->group(function () {
     Route::get('/start-scan-on-nessus-server', [ScanController::class, 'startNessusScan']);
