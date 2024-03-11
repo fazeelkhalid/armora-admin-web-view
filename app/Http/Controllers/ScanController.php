@@ -103,8 +103,7 @@ class ScanController extends Controller
         
         if ($device && $device->is_verified && $device->current_ip) {
             
-            $existingScan = Scans::where('ip', $device->current_ip)
-                ->where('device_code', $device->code)
+            $existingScan = Scans::where('device_code', $device->code)
                 ->whereIn('status', [ScanReportStatusType::PENDING, ScanReportStatusType::INPROGRESS])
                 ->first();
                 
