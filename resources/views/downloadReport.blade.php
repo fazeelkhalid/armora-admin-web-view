@@ -255,11 +255,16 @@
         align-items: center;
         margin-top: 20px;
     }
+
+    @media print {
+
+        #printButton {
+            display: none !important;
+        }
+    }
     </style>
     <script type="text/javascript">
-    document.getElementById("printButton").addEventListener("click", function() {
-        window.print();
-    });
+    window.print();
     var toggle = function(id) {
         var div = document.getElementById(id);
         var button = document.getElementById(id + '-show');
@@ -461,6 +466,7 @@
             </table>
             <div class="clear"></div>
         </div>
+
         <div style="width: 100%;">
             <h5 xmlns="" style="font-size: 16px; font-weight: 700; margin-bottom: 20px;">TABLE OF CONTENTS</h5>
             <ul xmlns="" style="list-style-type: none; margin-bottom: 20px;">
@@ -562,6 +568,13 @@
         style="width: 1024px; box-sizing: border-box; text-align: center; font-size: 12px; color: #999; padding: 10px 0 20px 0; margin: 0 auto;">
         © 2024 ARMORA, Inc. All rights reserved.
     </div>
+
+
+    <script>
+    document.getElementById("printButton").addEventListener("click", function() {
+        window.print();
+    });
+    </script>
 </body>
 
 </html>

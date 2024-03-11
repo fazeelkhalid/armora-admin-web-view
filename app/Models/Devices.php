@@ -75,7 +75,7 @@ class Devices extends Model implements Authenticatable, JWTSubject
         $Response = null;
         if ($device) {
             if (!$device->is_verified) {
-                // $device->update(['is_verified' => true]);
+                $device->update(['is_verified' => true]);
                 $token = auth('api')->login($device);
                 $Response = response()->json(['message' => 'Device verification successful',  'access_token' => $token,], 200);                
             } else {
