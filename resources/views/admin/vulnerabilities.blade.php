@@ -43,9 +43,9 @@ $(document).ready(function() {
         var confirmDelete = confirm("Are you sure you want to delete this vulnerability?");
 
         if (confirmDelete) {
-			
+			var url_ = `/vulnerability_/${vulnerabilityName}`;
 			$.ajax({
-                url: `/vulnerability_/${vulnerabilityName}`,
+				url: {{ url(url_) }},
                 type: 'GET',
                 success: function(response) {
 				table.row(rowIndex).remove().draw();
@@ -69,9 +69,9 @@ $(document).ready(function() {
 		else {
 			vulnerabilityName = tr.data('vulnerabilityname');
 		}
-		
+		var url_ = `vulnerability_details/${vulnerabilityName}`,
 		$.ajax({
-			url: `vulnerability_details/${vulnerabilityName}`,
+			url: {{ url(url_) }},
 			type: 'GET',
 			success: function(response) {
 				
