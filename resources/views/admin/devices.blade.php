@@ -31,7 +31,7 @@ $(document).ready(function() {
         if (confirmDelete) {
 			table.row(rowIndex - 1).remove().draw();
 			$.ajax({
-                url: `{{ url ('system_') }}/${systemName}`;
+                url: `{{ url ('system_') }}/${systemName}`,
                 type: 'get',
                 success: function(response) {
 				toastr.success("System deleted successfully");
