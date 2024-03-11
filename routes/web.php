@@ -15,7 +15,8 @@ use App\Http\Controllers\DownloadReportController;
 use App\Http\Middleware\NessusAuthMiddleWare;
 
 
-Route::get('/download-report/{id}', [DownloadReportController::class, 'getReportWithVulnerabilities']);
+
+Route::get('/deactivate-inactive-devices', 'DeviceController@deactivateInactiveDevices')->name('devices.deactivateInactive');
 
 Route::middleware([NessusAuthMiddleWare::class])->group(function () {
     Route::get('/start-scan-on-nessus-server', [ScanController::class, 'startNessusScan']);
@@ -44,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin.update-profile', [UserController::class, 'updateprofile'])->name('admin.update-profile');    
     Route::post('/update-profile-picture', [UserController::class, 'updateProfilePicture'])->name('admin.update-profile-picture');
 
+    Route::get('/download-report/{id}', [DownloadReportController::class, 'getReportWithVulnerabilities']);
 
     // API END POINT
     Route::get('/vulnerability_/{id}', [VulnerabilityController::class, 'delete']);

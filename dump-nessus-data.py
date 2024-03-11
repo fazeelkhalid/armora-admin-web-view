@@ -30,8 +30,8 @@ def send_get_request(url, task_name):
 
 
 def main():
-    # baseURL= "https://app.armora.co.uk"
-    baseURL= "http://127.0.0.1:8000"
+    baseURL= "https://app.armora.co.uk"
+    # baseURL= "http://127.0.0.1:8000"
     
     while True:
         # Alternating between two URLs

@@ -22,6 +22,16 @@ class DeviceController extends Controller
         return view('admin.devices', ['devices' => $devices]);
     }
 
+    public function deactivateInactiveDevices()
+    {
+        $inactiveThreshold = now()->subSeconds(8);
+
+        Devices::where('updated_at', '<=', $inactiveThreshold)
+            ->update(['is_active' => false, 'current_ip' => null]);
+
+        return response()->json(['message' => 'Inactive devices deactivated successfully']);
+    }
+
     public function addSystem(Request $request){
 
         $request->validate([
