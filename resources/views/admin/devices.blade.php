@@ -26,7 +26,7 @@ $(document).ready(function() {
 		
 		var systemName = $(this).closest('tr').data('devicename');
 		
-        var confirmDelete = confirm("Are you sure you want to delete this vulnerability?");
+        var confirmDelete = confirm("Are you sure you want to delete this device?");
 		console.log(systemName);
         if (confirmDelete) {
 			table.row(rowIndex - 1).remove().draw();
