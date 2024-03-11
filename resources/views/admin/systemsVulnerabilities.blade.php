@@ -29,7 +29,7 @@ $(document).ready(function() {
         if (confirmDelete) {
 
 			$.ajax({
-                url: `/system_/${systemName}`,
+				url: `{{ url ('system_') }}/${systemName}`,
                 type: 'GET',
                 success: function(response) {
 				card.hide();

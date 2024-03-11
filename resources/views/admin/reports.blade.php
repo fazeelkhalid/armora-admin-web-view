@@ -15,7 +15,7 @@ $(document).ready(function() {
         var confirmDelete = confirm("Are you sure you want to delete this vulnerability?");
         if (confirmDelete) {
 			$.ajax({
-				url: `/report_/${reportName}`,
+                url: `{{ url ('report_') }}/${reportName}`,
                 type: 'GET',
                 success: function(response) {
 				card.hide();

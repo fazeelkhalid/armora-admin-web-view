@@ -31,7 +31,7 @@ $(document).ready(function() {
         if (confirmDelete) {
 			table.row(rowIndex - 1).remove().draw();
 			$.ajax({
-                url: `/system_/${systemName}`,
+                url: `{{ url ('system_') }}/${systemName}`;
                 type: 'get',
                 success: function(response) {
 				toastr.success("System deleted successfully");
@@ -53,7 +53,7 @@ $(document).ready(function() {
 		console.log(systemName);
         if (confirmDelete) {
 			$.ajax({
-                url: `/start-scan/${systemName}`,
+                url: `{{ url ('start-scan') }}/${systemName}`,
                 type: 'get',
                 success: function(response) {
 				toastr.success(response.message);

@@ -69,10 +69,8 @@ $(document).ready(function() {
 		else {
 			vulnerabilityName = tr.data('vulnerabilityname');
 		}
-		var url_ = `{{ url ('vulnerability_details') }}/${vulnerabilityName}`;
-		console.log(url_);
 		$.ajax({
-			url: url_,
+			url: `{{ url ('vulnerability_details') }}/${vulnerabilityName}`,
 			type: 'GET',
 			success: function(response) {
 				
