@@ -24,7 +24,7 @@ class SchedulerController extends Controller
                     print_r($reportResponse);
                     die();
                     if ($reportResponse->status() == 200) {
-                        $deleteResponse = 0;//$nessusScan->deleteScan($scanId);
+                        $deleteResponse = $nessusScan->deleteScan($scanId);
 
                         // Store the responses in an array
                         $allResponses[] = [
