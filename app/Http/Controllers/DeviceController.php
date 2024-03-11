@@ -31,9 +31,7 @@ class DeviceController extends Controller
                 'required',
                 'max:32',
                 'min:5',
-                Rule::unique('devices')->where(function ($query) use ($request) {
-                    return $query->where('user_id', auth()->user()->id);
-                }),
+                Rule::unique('devices'),
             ],
         ], [
             'device_name.required' => 'The device name is required.',
