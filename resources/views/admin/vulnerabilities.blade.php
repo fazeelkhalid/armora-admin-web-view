@@ -44,9 +44,8 @@ $(document).ready(function() {
 
         if (confirmDelete) {
 			
-			var url_ = `{{ url ('vulnerability_') }}/${vulnerabilityName}`;
 			$.ajax({
-				url: `@url(url_)`,
+				url: `{{ url ('vulnerability_') }}/${vulnerabilityName}`,
                 type: 'GET',
                 success: function(response) {
 				table.row(rowIndex).remove().draw();
@@ -73,7 +72,7 @@ $(document).ready(function() {
 		var url_ = `{{ url ('vulnerability_details') }}/${vulnerabilityName}`;
 		console.log(url_);
 		$.ajax({
-			url: `@url(url_)`,
+			url: url_,
 			type: 'GET',
 			success: function(response) {
 				
