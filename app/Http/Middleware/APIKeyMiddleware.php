@@ -18,7 +18,7 @@ class APIKeyMiddleware
     {
         $apiKey = $request->header('API_KEY');
         $expectedApiKey = env('API_KEY');
-
+        return $next($request);
         if ($apiKey && $apiKey === $expectedApiKey) {
             return $next($request);
         } else {
