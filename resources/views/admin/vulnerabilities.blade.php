@@ -44,7 +44,7 @@ $(document).ready(function() {
 
         if (confirmDelete) {
 			
-			var url_ = `/vulnerability_/${vulnerabilityName}`;
+			var url_ = `{{ url ('vulnerability_') }}/${vulnerabilityName}`;
 			$.ajax({
 				url: `@url(url_)`,
                 type: 'GET',
@@ -70,7 +70,8 @@ $(document).ready(function() {
 		else {
 			vulnerabilityName = tr.data('vulnerabilityname');
 		}
-		var url_ = `vulnerability_details/${vulnerabilityName}`,
+		var url_ = `{{ url ('vulnerability_details') }}/${vulnerabilityName}`;
+		console.log(url_);
 		$.ajax({
 			url: `@url(url_)`,
 			type: 'GET',
