@@ -14,7 +14,12 @@ class DownloadReportController extends Controller
     {
         $id = 'sr_'.$id;
         $vulnerabilities = Vulnerability::allDetailsBYReportID($id);
+        
         $scanReport = scanReport::find($id);
+
+        if(!$scanReport){
+            abort(404);
+        }
 
         $critical = 0;
         $high = 0;

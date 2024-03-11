@@ -238,10 +238,11 @@ class ScanController extends Controller
                     $scan = Scans::where('code', $scanName)->first();
                     
                     if ($scan && $scan->status == ScanReportStatusType::INPROGRESS) {
-                        
+                       
                         $device_id = $scan->device_code;
                         $report_name = $scan->device_name . ' / ' . str_replace('ss_', '', $scan->code);
                         if($device_id){
+                            
                             $scanReport = scanReport::create([
                                 'code'=> GenerateIDController::getID('sr_'),
                                 'device_id' => $device_id,
@@ -255,7 +256,7 @@ class ScanController extends Controller
                                 Vulnerability::create($data);
                             }
                             
-                            Scans::markScansAsCompleted($scan->code);
+                            //Scans::markScansAsCompleted($scan->code);
                             Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $device_id);
 
                             return response()->json([
@@ -270,7 +271,6 @@ class ScanController extends Controller
                             
                         ]);
                     }
-                    
                     return response()->json([
                         'message' => "scan not found",
                         'scan_code' => $scanName
