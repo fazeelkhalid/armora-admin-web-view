@@ -255,7 +255,7 @@ class ScanController extends Controller
                                 Vulnerability::create($data);
                             }
                             
-                            //Scans::markScansAsCompleted($scan->code);
+                            Scans::markScansAsCompleted($scan->code);
                             Notification::createNotification($scanReport->code, NotificationType::SCAN_REPORT, $device_id);
 
                             return response()->json([
