@@ -46,7 +46,7 @@ $(document).ready(function() {
 			
 			var url_ = `/vulnerability_/${vulnerabilityName}`;
 			$.ajax({
-				url: `{{ url(url_) }}`,
+				url: `@url(url_)`,
                 type: 'GET',
                 success: function(response) {
 				table.row(rowIndex).remove().draw();
@@ -72,7 +72,7 @@ $(document).ready(function() {
 		}
 		var url_ = `vulnerability_details/${vulnerabilityName}`,
 		$.ajax({
-			url: `{{ url(url_) }}`,
+			url: `@url(url_)`,
 			type: 'GET',
 			success: function(response) {
 				
